@@ -77,32 +77,25 @@
 </head>
 <body>
     <div class="classified-banner">
-        EU RESTRICTED ACCESS – SCO-AE SECURE NODE
+        EU CONFIDENTIAL ACCESS – SCO-AE SECURE NODE
     </div>
 
     <div class="container main-container">
         <h1 class="title">Special Coordination Office for Anomalous Events</h1>
-        <p class="subtext">Directorate-General for Home Affairs · Division: AE/42/JANUS</p>
+        <p class="subtext">Directorate-General for Home Affairs · EUROSUR · FRONTEX</p>
 
         <div class="terminal-box" id="terminal"></div>
         <input type="text" id="commandInput" class="terminal-input" placeholder="> waiting for user login..." disabled />
 
         <div class="footer">
-            &copy; 2025 European Union · SCO-AE · Secure Infrastructure Division
+            &copy; 2025 European Union · SCO-AE · Analysis Division · Project JANUS
         </div>
     </div>
 
-    <script src="data.js"></script>
+    <script src="Scripts/sourcedata.js"></script>
     <script>
         const terminal = document.getElementById("terminal");
         const input = document.getElementById("commandInput");
-
-        //const users = {
-        //    "taroo_arg": { password: "JANUS2025", contentId: "content-taroo_arg" },
-        //    "halvorune": { password: "VANIR03", contentId: "content-halvorune" },
-        //    "radardev": { password: "CASCADER", contentId: "content-radardev" },
-        //    "kingpin": { password: "AEWEAPON", contentId: "content-kingpin" }
-        //};
 
         let loginStep = 0;
         let loginUser = "";
@@ -128,22 +121,17 @@
                     loginStep = 1;
                 } else if (loginStep === 1) {
                     const password = inputText.trim();
-                    console.log(data.users, data.users[loginUser], loginUser);
-                    console.log(data.users[loginUser].password, password);
                     appendLine("Authenticating...");
                     setTimeout(() => {
-                        console.log("Checking credentials for:", loginUser);
                         if (!data || !data.users) return console.error("Data not ready");
 
                         if (data.users[loginUser] && data.users[loginUser].password === password) {
-                            console.log("ACCESS GRANTED");
                             appendLine("[ACCESS GRANTED]", "#0f0");
                             user = data.users[loginUser];
                             authenticated = true;
                             input.placeholder = "> ";
                             appendIntro();
                         } else {
-                            console.log("ACCESS DENIED");
                             appendLine("[ACCESS DENIED]", "#f33");
                             loginStep = 0;
                             loginUser = "";
@@ -152,28 +140,70 @@
                     }, 5000);
                 }
             } else {
-                const cmd = inputText.trim().toLowerCase();
+                var fullString = inputText.trim().toLowerCase();
+                var args = fullString.split(" ");
 
-                switch (cmd) {
-                    case "validate_user":
-                        appendLine("[SYSTEM]: Validation failed. Clearance mismatch.");
-                        break;
-                    case "probe --logs ae-18":
-                        appendLine("[PROBE]: Incident AE-18-2025 identified. Location: Trento. Classification: MEM-H.");
-                        break;
-                    case "access incident_log":
-                        appendLine("[ACCESS DENIED]: You do not have sufficient clearance to view classified logs.");
-                        break;
-                    default:
-                        appendLine("[ERROR]: Unknown command.");
+                var output = processCommand(args, data.commands, user.clearance);
+                if (!output) {
+                    appendLine("[ERROR] Command not found.");
+                } else {
+                    appendText(output);
                 }
             }
         }
 
-        function appendIntro() {
-            user.intro.forEach((line, i) => {
-                setTimeout(() => appendLine(line), 100 * i);
+        function processCommand(args, tree, userClearance, clearanceError = "[ACCESS DENIED] Insufficient security clearance level.") {
+            if (!args.length) return null;
+
+            const [current, ...rest] = args;
+
+            for (const node of tree) {
+                if (node.keyword === current) {
+                    // Check user clearance
+                    if (userClearance < node.clearance) {
+                        return clearanceError;
+                    }
+
+                    // Terminal response
+                    if (node.response && (!node.subcommands || !node.subcommands.length)) {
+                        return typeof node.response === "function"
+                            ? node.response(rest)
+                            : node.response;
+                    }
+
+                    // Node has subcommands, recurse
+                    if (node.subcommands) {
+                        const result = processCommand(rest, node.subcommands, userClearance, clearanceError);
+                        return result !== null ? result : node.error;
+                    }
+                }
+            }
+
+            // No matching keyword found at this tree level
+            return null;
+        }
+
+        function appendText(inputLines) {
+            let latency = 0;
+            const stutter_power = 2;
+
+            var lines = [].concat(inputLines);
+
+            lines.forEach((line, i) => {
+                const delay = 100 * i + latency;
+                setTimeout(() => {
+                    appendLine(line);
+                }, delay);
+
+                var rng = Math.random() * 1000;
+                var modifier = Math.floor(Math.pow(rng, 1 / stutter_power) * stutter_power);
+                latency += modifier;
             });
+        }
+
+
+        function appendIntro() {
+            appendText(user.intro);
         }
 
         input.addEventListener("keydown", function (e) {
