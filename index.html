@@ -1,11 +1,91 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
+<head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bootstrap demo</title>
-  </head>
-  <body>
-    <h1>Hello, world!</h1>
-  </body>
+    <title>SCO-AE Secure Node</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #111;
+            color: #c8c8c8;
+            font-family: 'Courier New', monospace;
+        }
+
+        .classified-banner {
+            background-color: #dc3545;
+            color: #fff;
+            padding: 0.5rem;
+            text-align: center;
+            letter-spacing: 2px;
+            font-weight: bold;
+        }
+
+        .main-container {
+            padding: 2rem;
+        }
+
+        .title {
+            color: #00ffcc;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .subtext {
+            font-size: 0.9rem;
+            color: #999;
+        }
+
+        .terminal-box {
+            background-color: #000;
+            padding: 1rem;
+            border: 1px solid #00ffcc;
+            border-radius: 5px;
+            margin-top: 1.5rem;
+            font-size: 0.95rem;
+            line-height: 1.5rem;
+            white-space: pre-wrap;
+        }
+
+        .footer {
+            margin-top: 3rem;
+            font-size: 0.8rem;
+            color: #666;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="classified-banner">
+        EU RESTRICTED ACCESS – SCO-AE SECURE NODE
+    </div>
+
+    <div class="container main-container">
+        <h1 class="title">Special Coordination Office for Anomalous Events</h1>
+        <p class="subtext">Directorate-General for Home Affairs · Division: AE/42/JANUS</p>
+
+        <div class="terminal-box">
+            Accessing node: SCO-AE-INT-01
+            Connection Secure (AES-512)
+            Handshake complete. Session initialized.
+            User status: NON-VERIFIED
+
+            > Welcome to the secure node of the Special Coordination Office for Anomalous Events.
+            > This system is classified under Council Directive 2013/488/EU.
+            > Unauthorized access constitutes a breach of EU cybersecurity and defense law.
+
+            Run the following to initiate probe:
+            `> validate_user --token=<REDACTED>
+                `
+
+                Project JANUS / AE Monitoring / Incident Logs / Memetic Safety Protocols
+        </div>
+
+        <div class="footer">
+            &copy; 2025 European Union · SCO-AE · Secure Infrastructure Division
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>
